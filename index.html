@@ -1,0 +1,48 @@
+<html lang="en">
+
+		<head>
+			<meta charset="UTF-8">
+			<title>แผนกวิชาเทคโนโลยีสารสนเทศ</title>
+
+			<link rel="stylesheet" href="assets/css/esp_material_reset.css">
+			<link href="https://fonts.googleapis.com/css?family=Taviraj" rel="stylesheet"> 
+			<link rel='stylesheet prefetch' href='http://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900|RobotoDraft:400,100,300,500,700,900'>
+			<link rel='stylesheet prefetch' href='http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css'>
+
+			<link rel="stylesheet" href="assets/css/esp_material.css">
+            <link rel="stylesheet" href="assets/css/styleSignin.css">
+            <script src="https://www.gstatic.com/firebasejs/4.4.0/firebase.js"></script>
+
+		</head>
+
+		<body>
+        <div>
+			<div class="pen-title">
+                <span><img src="https://www.song.ac.th/song_web58/images/header.jpg" alt=""></span>
+                <br/>      
+			</div>
+			<div class="container">
+				<div class="card"></div>
+				<div class="card">
+					<h1 class="title cc">สถานะ :<a id="tt"></a> <a id="kk"></a></h1>
+                    <div class="button-container">
+                        <button id="btn01" name="toggle01" onclick="toggleEvent01()" class=""><span id="tt01">โต๊ะที่ 1</span></button>
+					</div>
+					<br/>
+                    <div class="button-container">
+                        <button id="btn02" name="toggle02" onclick="toggleEvent02()" class=""><span id="tt02">โต๊ะที่ 2</span></button>
+					</div>
+					<br/>					
+                    <div class="button-container">
+                        <button id="btn03" name="toggle03" onclick="toggleEvent03()" class=""><span id="tt03">โต๊ะที่ 3</span></button>
+                    </div>
+                    <br>
+				</div>
+			</div>
+        </div>
+
+        <script src="app.js"></script>
+
+	</body>
+
+</html>
