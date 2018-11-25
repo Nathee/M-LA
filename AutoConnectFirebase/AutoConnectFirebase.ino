@@ -80,18 +80,20 @@ void setup() {
   setupFirebase();
 
   setupPinsMode();
+
+  wifiManager.resetSettings();
 }
 
 void loop() {
-//  s.write("A");
+  //  s.write("A");
   getData();
   if (s.available() > 0)
   {
     dataI = s.read();
     if (dataI == 99) {
-      Firebase.push("/Arduino/OUTPUT01", "OFF");
-      Firebase.push("/Arduino/OUTPUT02", "OFF");
-      Firebase.push("/Arduino/OUTPUT03", "OFF");
+      Firebase.push("/Arduino/OUTPUT01/", "OFF");
+      Firebase.push("/Arduino/OUTPUT02/", "OFF");
+      Firebase.push("/Arduino/OUTPUT03/", "OFF");
     }
     Serial.println(dataI);
   }
