@@ -22,6 +22,8 @@ const dbRefObject03 = firebase.database().ref().child('/Arduino/OUTPUT03');
 
 const tt = document.getElementById('tt');
 const tt01 = document.getElementById('tt01');
+const tt02 = document.getElementById('tt02');
+const tt03 = document.getElementById('tt03');
 var msg = "", status = "", ttcode = "";
 
 (function () {
@@ -30,12 +32,12 @@ var msg = "", status = "", ttcode = "";
     dbRefObject01.on('value', snap => {
         status = snap.val();
         if (status == "ON") {
-            preObject.innerHTML = "กำลังทำงาน";
+            tt01.innerHTML = "กำลังเสริฟโต๊ะ01";
         } else {
-            preObject.innerHTML = "พร้อมทำงาน";
+            tt01.innerHTML = "พร้อมทำงาน";
         }
 
-        if (preObject.innerHTML == "พร้อมทำงาน") {
+        if (tt01.innerHTML == "พร้อมทำงาน") {
             Btn01.classList.remove("deactive");
             Btn01.classList.add("active");
         } else {
@@ -47,12 +49,12 @@ var msg = "", status = "", ttcode = "";
     dbRefObject02.on('value', snap => {
         status = snap.val();
         if (status == "ON") {
-            preObject.innerHTML = "กำลังทำงาน";
+            tt02.innerHTML = "กำลังเสริฟโต๊ะ02";
         } else {
-            preObject.innerHTML = "พร้อมทำงาน";
+            tt02.innerHTML = "พร้อมทำงาน";
         }
 
-        if (preObject.innerHTML == "พร้อมทำงาน") {
+        if (tt02.innerHTML == "พร้อมทำงาน") {
             Btn02.classList.remove("deactive");
             Btn02.classList.add("active");
         } else {
@@ -64,12 +66,12 @@ var msg = "", status = "", ttcode = "";
     dbRefObject03.on('value', snap => {
         status = snap.val();
         if (status == "ON") {
-            preObject.innerHTML = "กำลังทำงาน";
+            tt03.innerHTML = "กำลังเสริฟโต๊ะ03";
         } else {
-            preObject.innerHTML = "พร้อมทำงาน";
+            tt03.innerHTML = "พร้อมทำงาน";
         }
 
-        if (preObject.innerHTML == "พร้อมทำงาน") {
+        if (tt03.innerHTML == "พร้อมทำงาน") {
             Btn03.classList.remove("deactive");
             Btn03.classList.add("active");
         } else {
@@ -82,7 +84,7 @@ var msg = "", status = "", ttcode = "";
 
 function toggleEvent01() {
     ttcode = "01";
-    if (preObject.innerHTML == "พร้อมทำงาน") {
+    if (tt01.innerHTML == "พร้อมทำงาน") {
         msg = "ON";
     } else {
         msg = "OFF";
@@ -91,7 +93,7 @@ function toggleEvent01() {
 }
 
 function toggleEvent02() {
-    if (preObject.innerHTML == "พร้อมทำงาน") {
+    if (tt02.innerHTML == "พร้อมทำงาน") {
         msg = "ON";
     } else {
         msg = "OFF";
@@ -100,7 +102,7 @@ function toggleEvent02() {
 }
 
 function toggleEvent03() {
-    if (preObject.innerHTML == "พร้อมทำงาน") {
+    if (tt03.innerHTML == "พร้อมทำงาน") {
         msg = "ON";
     } else {
         msg = "OFF";
