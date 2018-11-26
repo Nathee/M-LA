@@ -1,4 +1,8 @@
 #include "HX711.h"
+#include <SoftwareSerial.h>
+
+SoftwareSerial s(40, 41);
+int dataI, dataO;
 
 byte line_error_code = 0, sw01 = 0, sw02 = 0, sw12 = 0;
 byte sensor[7] = {0, 0, 0, 0, 0, 0, 0};
@@ -81,10 +85,15 @@ void check_pr() {
   Serial.print(sensor[5]);
   Serial.print("    sensor[6] : ");
   Serial.println(sensor[6]);
+
+  if (s.available() > 0)  {
+    dataI = s.read();
+  }
 }
 
 void setup()
 {
+  s.begin(9600);
   Serial.begin(9600);
 
   pinMode(pwm_1, OUTPUT);
@@ -109,7 +118,7 @@ void setup()
   pinMode(table02, INPUT);
   // select Table button
 
-    //Untrasonic
+  //Untrasonic
   pinMode(TriggerPin, OUTPUT);
   pinMode(EchoPin, INPUT);
   //Untrasonic
@@ -128,8 +137,8 @@ void loop()
 
   checkweight = balanza.get_units(1), 0;
   Serial.println(checkweight);
-
-  while (sw01 == HIGH)
+  
+  while (sw01 == HIGH || dataI == 11)
   {
     check_pr();
     check();
@@ -139,32 +148,38 @@ void loop()
     }
     else
     {
-    if (table_error_code == "00")
-    {
-      if (sensor[5] == HIGH && sensor[6] == LOW)
+      if (table_error_code == "00")
       {
-        table_error_code = "01";
-        motor_output(0, 0, 0, 0);
-        waitC();
-      } else {
-        read_sensor_values();
-        main_Control();
+        if (sensor[5] == HIGH && sensor[6] == LOW)
+        {
+          table_error_code = "01";
+          motor_output(0, 0, 0, 0);
+          waitC();
+        } else {
+          read_sensor_values();
+          main_Control();
+        }
       }
-    }
-    if (table_error_code == "01")
-    {
-      if (sensor[5] == HIGH && sensor[6] == HIGH)
+      if (table_error_code == "01")
       {
-        sucess("00");
-        break;
-      } else {
-        read_sensor_values();
-        main_Control();
+        if (sensor[5] == HIGH && sensor[6] == HIGH)
+        {
+          if (s.available() > 0)
+          {
+            dataO = 99;
+            s.write(dataO);
+            Serial.println(dataO);
+          }
+          sucess("00");
+          break;
+        } else {
+          read_sensor_values();
+          main_Control();
+        }
       }
-    }
     }
   }
-  while (sw02 == HIGH)
+  while (sw02 == HIGH || dataI == 12)
   {
     check_pr();
     check();
@@ -174,32 +189,38 @@ void loop()
     }
     else
     {
-    if (table_error_code == "00")
-    {
-      if (sensor[5] == LOW && sensor[6] == HIGH)
+      if (table_error_code == "00")
       {
-        table_error_code = "10";
-        motor_output(0, 0, 0, 0);
-        waitC();
-      } else {
-        read_sensor_values();
-        main_Control();
+        if (sensor[5] == LOW && sensor[6] == HIGH)
+        {
+          table_error_code = "10";
+          motor_output(0, 0, 0, 0);
+          waitC();
+        } else {
+          read_sensor_values();
+          main_Control();
+        }
       }
-    }
-    if (table_error_code == "10")
-    {
-      if (sensor[5] == HIGH && sensor[6] == HIGH)
+      if (table_error_code == "10")
       {
-        sucess("00");
-        break;
-      } else {
-        read_sensor_values();
-        main_Control();
+        if (sensor[5] == HIGH && sensor[6] == HIGH)
+        {
+          if (s.available() > 0)
+          {
+            dataO = 99;
+            s.write(dataO);
+            Serial.println(dataO);
+          }
+          sucess("00");
+          break;
+        } else {
+          read_sensor_values();
+          main_Control();
+        }
       }
-    }
     }
   }
-  while (sw12 == HIGH)
+  while (sw12 == HIGH || dataI == 13)
   {
     check_pr();
     check();
@@ -209,43 +230,49 @@ void loop()
     }
     else
     {
-    if (table_error_code == "00")
-    {
-      if (sensor[5] == HIGH && sensor[6] == LOW)
+      if (table_error_code == "00")
       {
-        table_error_code = "01";
-        sw01 = 0;
-        motor_output(0, 0, 0, 0);
-        waitC();
-      } else {
-        read_sensor_values();
-        main_Control();
+        if (sensor[5] == HIGH && sensor[6] == LOW)
+        {
+          table_error_code = "01";
+          sw01 = 0;
+          motor_output(0, 0, 0, 0);
+          waitC();
+        } else {
+          read_sensor_values();
+          main_Control();
+        }
       }
-    }
-    if (table_error_code == "01")
-    {
-      if (sensor[5] == LOW && sensor[6] == HIGH)
+      if (table_error_code == "01")
       {
-        table_error_code = "10";
-        sw02 = 0;
-        motor_output(0, 0, 0, 0);
-        waitC();
-      } else {
-        read_sensor_values();
-        main_Control();
+        if (sensor[5] == LOW && sensor[6] == HIGH)
+        {
+          table_error_code = "10";
+          sw02 = 0;
+          motor_output(0, 0, 0, 0);
+          waitC();
+        } else {
+          read_sensor_values();
+          main_Control();
+        }
       }
-    }
-    if (table_error_code == "10")
-    {
-      if (sensor[5] == HIGH && sensor[6] == HIGH)
+      if (table_error_code == "10")
       {
-        sucess("00");
-        break;
-      } else {
-        read_sensor_values();
-        main_Control();
+        if (sensor[5] == HIGH && sensor[6] == HIGH)
+        {
+          if (s.available() > 0)
+          {
+            dataO = 99;
+            s.write(dataO);
+            Serial.println(dataO);
+          }
+          sucess("00");
+          break;
+        } else {
+          read_sensor_values();
+          main_Control();
+        }
       }
-    }
     }
   }
 }
