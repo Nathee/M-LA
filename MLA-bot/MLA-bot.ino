@@ -137,7 +137,7 @@ void loop()
 
   checkweight = balanza.get_units(1), 0;
   Serial.println(checkweight);
-  
+
   while (sw01 == HIGH || dataI == 11)
   {
     check_pr();
@@ -344,57 +344,57 @@ void read_sensor_values()
 }
 void main_Control()
 {
-  if (line_error_code == 17)
+  if (line_error_code == 17)         // straight
   {
-    motor_output(34, 45, 255, 255);
+    motor_output(37, 50, 255, 255);
   }
-  else if (line_error_code == 4)
+  else if (line_error_code == 4)      // straight
   {
-    motor_output(35, 45, 255, 255);
+    motor_output(37, 50, 255, 255);
   }
-  else if (line_error_code == 3)
+  else if (line_error_code == 3)      // Turn left(2)
   {
-    motor_output(45, 15, 255, 255);
+    motor_output(35, 5, 255, 0);
   }
-  else if (line_error_code == 7)
+  else if (line_error_code == 7)      // Turn left(3)
   {
-    motor_output(50, 25, 255, 255);
+    motor_output(55, 15, 255, 0);
   }
-  else if (line_error_code == 15)
+  else if (line_error_code == 15)     // Turn left(4)
   {
-    motor_output(70, 35, 255, 0);
+    motor_output(70, 20, 255, 0);
   }
-  else if (line_error_code == 19)
+  else if (line_error_code == 19)     // Turn left(1)
   {
-    motor_output(35, 15, 255, 255);
+    motor_output(25, 0, 255, 0);
   }
-  else if (line_error_code == 24)
+  else if (line_error_code == 24)     // Turn right(2)
   {
-    motor_output(15, 45, 255, 255);
+    motor_output(5, 35, 0, 255);
   }
-  else if (line_error_code == 25)
+  else if (line_error_code == 25)     // Turn right(1)
   {
-    motor_output(15, 35, 255, 255);
+    motor_output(0, 25, 0, 255);
   }
-  else if (line_error_code == 28)
+  else if (line_error_code == 28)     // Turn right(3)
   {
-    motor_output(25, 50, 255, 255);
+    motor_output(15, 55, 0, 255);
   }
-  else if (line_error_code == 30)
+  else if (line_error_code == 30)     // Turn right(4)
   {
-    motor_output(35, 70, 0, 255);
+    motor_output(20, 70, 0, 255);
   }
-  else if (line_error_code == 31)
+  else if (line_error_code == 31)     // Back
   {
     motor_output(30, 30, 0, 0);
   }
-  else if (line_error_code == 1)
+  else if (line_error_code == 1)      // Turn right
   {
-    motor_output(0, 85, 0, 255);
+    motor_output(15, 70, 0, 255);
   }
-  else if (line_error_code == 16)
+  else if (line_error_code == 16)     // Turn left
   {
-    motor_output(85, 0, 255, 0);
+    motor_output(70, 15, 255, 0);
   }
   else if (line_error_code == 0)      // line_error_code code:Stop
   {
