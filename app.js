@@ -49,7 +49,7 @@ const tt03 = document.getElementById('tt03');
     dbRefObject02.on('value', snap => {
         status = snap.val();
         if (status == 1) {
-            tt02.innerHTML = "กำลังเสริฟโต๊ะ 01";
+            tt02.innerHTML = "กำลังเสริฟโต๊ะ 02";
         } else {
             tt02.innerHTML = "โต๊ะ 02 พร้อมทำงาน";
         }
