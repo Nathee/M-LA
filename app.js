@@ -9,7 +9,7 @@ var config = {
 };
 firebase.initializeApp(config);
 
-var msg = "", status = "", ttcode = "",deviceNumber = "001", deviceName = "Mla " + deviceNumber;
+var msg = 0, status = 0, ttcode = "",deviceNumber = "001", deviceName = "Mla " + deviceNumber;
 //   Get elecnets
 const preObject = document.getElementById('kk');
 //   Get elecnets
@@ -31,7 +31,7 @@ const tt03 = document.getElementById('tt03');
     // Sync object changes
     dbRefObject01.on('value', snap => {
         status = snap.val();
-        if (status == "ON") {
+        if (status == 1) {
             tt01.innerHTML = "กำลังเสริฟโต๊ะ01";
         } else {
             tt01.innerHTML = "พร้อมทำงาน";
@@ -48,7 +48,7 @@ const tt03 = document.getElementById('tt03');
 
     dbRefObject02.on('value', snap => {
         status = snap.val();
-        if (status == "ON") {
+        if (status == 1) {
             tt02.innerHTML = "กำลังเสริฟโต๊ะ02";
         } else {
             tt02.innerHTML = "พร้อมทำงาน";
@@ -65,7 +65,7 @@ const tt03 = document.getElementById('tt03');
 
     dbRefObject03.on('value', snap => {
         status = snap.val();
-        if (status == "ON") {
+        if (status == 1) {
             tt03.innerHTML = "กำลังเสริฟโต๊ะ03";
         } else {
             tt03.innerHTML = "พร้อมทำงาน";
@@ -85,27 +85,27 @@ const tt03 = document.getElementById('tt03');
 function toggleEvent01() {
     ttcode = "01";
     if (tt01.innerHTML == "พร้อมทำงาน") {
-        msg = "ON";
+        msg = 1;
     } else {
-        msg = "OFF";
+        msg = 0;
     }
     dbRefObject01.set(msg);
 }
 
 function toggleEvent02() {
     if (tt02.innerHTML == "พร้อมทำงาน") {
-        msg = "ON";
+        msg = 1;
     } else {
-        msg = "OFF";
+        msg = 0;
     }
     dbRefObject02.set(msg);
 }
 
 function toggleEvent03() {
     if (tt03.innerHTML == "พร้อมทำงาน") {
-        msg = "ON";
+        msg = 1;
     } else {
-        msg = "OFF";
+        msg = 0;
     }
     dbRefObject03.set(msg);
 }
