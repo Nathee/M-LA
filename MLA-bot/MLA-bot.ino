@@ -1,22 +1,16 @@
+#include <Arduino.h>
 #include "HX711.h"
-#include <SoftwareSerial.h>
 
-SoftwareSerial s(40, 41);
 int dataI, dataO;
 
 byte line_error_code = 0, sw01 = 0, sw02 = 0, sw12 = 0;
-byte sensor[7] = {0, 0, 0, 0, 0, 0, 0};
+byte sensor[7] = {0, 0, 0, 0, 0, 0, 0},commands[4] = {0, 0, 0, 0};
 String table_error_code = "00", tCode = "00";
 int checkweight = 0, dLoop = 0;
 
-unsigned long previousMillis05 = 0, previousMillis10 = 0;
-
-const long interval10 = 10000;
-const long interval05 = 5000;
-
 void read_sensor_values(void);
 void main_Control(void);
-void check(void);
+void checkUntrasonic(void);
 void waitC(void);
 
 // Line sensor Input
@@ -58,6 +52,12 @@ int Distance;
 #define pwm_1 4
 #define motorL 5
 // Output
+// CheckOnlineCommand 41 output
+#define CommandI01 38
+#define CommandI02 39
+#define CommandI03 40
+#define CommandO04 41
+// CheckOnlineCommand
 
 void motor_output(int _PWM_1, int _PWM_2, int _MotorL, int _MotorR)
 {
@@ -74,6 +74,7 @@ void sucess(String _code)
   sw12 = 0;
   table_error_code = _code;
   motor_output(0, 0, 0, 0);
+  digitalWrite(CommandO04,HIGH);
 }
 void check_pr() {
   Serial.print("table_error_code : ");
@@ -85,15 +86,13 @@ void check_pr() {
   Serial.print(sensor[5]);
   Serial.print("    sensor[6] : ");
   Serial.println(sensor[6]);
-
-  if (s.available() > 0)  {
-    dataI = s.read();
-  }
+  commands[0] = digitalRead(CommandI01);
+  commands[1] = digitalRead(CommandI02);
+  commands[2] = digitalRead(CommandI03);
 }
 
 void setup()
 {
-  s.begin(9600);
   Serial.begin(9600);
 
   pinMode(pwm_1, OUTPUT);
@@ -107,22 +106,24 @@ void setup()
   pinMode(sensor04, INPUT);
   pinMode(sensor05, INPUT);
   // Line sensor Input
-
   // Table sensor Input
   pinMode(table_sensor01, INPUT);
   pinMode(table_sensor02, INPUT);
   // Table sensor Input
-
   // select Table button
   pinMode(table01, INPUT);
   pinMode(table02, INPUT);
   // select Table button
-
   //Untrasonic
   pinMode(TriggerPin, OUTPUT);
   pinMode(EchoPin, INPUT);
   //Untrasonic
-
+// CheckOnlineCommand
+  pinMode(CommandI01, INPUT);
+  pinMode(CommandI02, INPUT);
+  pinMode(CommandI03, INPUT);
+  pinMode(CommandO04, OUTPUT);
+// CheckOnlineCommand
   Serial.println(balanza.read());
   balanza.set_scale(207.5);
   balanza.tare(20);
@@ -136,12 +137,11 @@ void loop()
   check_pr();
 
   checkweight = balanza.get_units(1), 0;
-  Serial.println(checkweight);
 
-  while (sw01 == HIGH || dataI == 11)
+  while (sw01 == HIGH || commands[0] == HIGH)
   {
     check_pr();
-    check();
+    checkUntrasonic();
     if (Distance <= 50)
     {
       motor_output(0, 0, 0, 0);
@@ -163,13 +163,7 @@ void loop()
       if (table_error_code == "01")
       {
         if (sensor[5] == HIGH && sensor[6] == HIGH)
-        {
-          if (s.available() > 0)
-          {
-            dataO = 99;
-            s.write(dataO);
-            Serial.println(dataO);
-          }
+        {          
           sucess("00");
           break;
         } else {
@@ -179,10 +173,10 @@ void loop()
       }
     }
   }
-  while (sw02 == HIGH || dataI == 12)
+  while (sw02 == HIGH || commands[1] == HIGH)
   {
     check_pr();
-    check();
+    checkUntrasonic();
     if (Distance <= 50)
     {
       motor_output(0, 0, 0, 0);
@@ -204,13 +198,7 @@ void loop()
       if (table_error_code == "10")
       {
         if (sensor[5] == HIGH && sensor[6] == HIGH)
-        {
-          if (s.available() > 0)
-          {
-            dataO = 99;
-            s.write(dataO);
-            Serial.println(dataO);
-          }
+        {          
           sucess("00");
           break;
         } else {
@@ -220,10 +208,10 @@ void loop()
       }
     }
   }
-  while (sw12 == HIGH || dataI == 13)
+  while (sw12 == HIGH || commands[2] == HIGH)
   {
     check_pr();
-    check();
+    checkUntrasonic();
     if (Distance <= 50)
     {
       motor_output(0, 0, 0, 0);
@@ -259,13 +247,7 @@ void loop()
       if (table_error_code == "10")
       {
         if (sensor[5] == HIGH && sensor[6] == HIGH)
-        {
-          if (s.available() > 0)
-          {
-            dataO = 99;
-            s.write(dataO);
-            Serial.println(dataO);
-          }
+        {          
           sucess("00");
           break;
         } else {
@@ -415,7 +397,7 @@ void waitC() {
   }
 }
 
-void check()
+void checkUntrasonic()
 {
   digitalWrite(TriggerPin, HIGH);
   digitalWrite(TriggerPin, LOW);
