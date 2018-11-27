@@ -9,6 +9,7 @@ var config = {
 };
 firebase.initializeApp(config);
 
+var msg = "", status = "", ttcode = "",deviceNumber = "001", deviceName = "Mla " + deviceNumber;
 //   Get elecnets
 const preObject = document.getElementById('kk');
 //   Get elecnets
@@ -16,15 +17,14 @@ const Btn01 = document.getElementById('btn01');
 const Btn02 = document.getElementById('btn02');
 const Btn03 = document.getElementById('btn03');
 // Create references
-const dbRefObject01 = firebase.database().ref().child('/Arduino/OUTPUT01');
-const dbRefObject02 = firebase.database().ref().child('/Arduino/OUTPUT02');
-const dbRefObject03 = firebase.database().ref().child('/Arduino/OUTPUT03');
+const dbRefObject01 = firebase.database().ref().child('deviceNumber/value/OUTPUT01');
+const dbRefObject02 = firebase.database().ref().child('deviceNumber/value/OUTPUT02');
+const dbRefObject03 = firebase.database().ref().child('deviceNumber/value/OUTPUT03');
 
 const tt = document.getElementById('tt');
 const tt01 = document.getElementById('tt01');
 const tt02 = document.getElementById('tt02');
 const tt03 = document.getElementById('tt03');
-var msg = "", status = "", ttcode = "";
 
 (function () {
 
