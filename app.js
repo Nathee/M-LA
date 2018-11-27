@@ -32,12 +32,12 @@ const tt03 = document.getElementById('tt03');
     dbRefObject01.on('value', snap => {
         status = snap.val();
         if (status == 1) {
-            tt01.innerHTML = "กำลังเสริฟโต๊ะ01";
+            tt01.innerHTML = "กำลังเสริฟโต๊ะ 01";
         } else {
-            tt01.innerHTML = "พร้อมทำงาน";
+            tt01.innerHTML = "โต๊ะ 01 พร้อมทำงาน";
         }
 
-        if (tt01.innerHTML == "พร้อมทำงาน") {
+        if (tt01.innerHTML == "โต๊ะ 01 พร้อมทำงาน") {
             Btn01.classList.remove("deactive");
             Btn01.classList.add("active");
         } else {
@@ -49,12 +49,12 @@ const tt03 = document.getElementById('tt03');
     dbRefObject02.on('value', snap => {
         status = snap.val();
         if (status == 1) {
-            tt02.innerHTML = "กำลังเสริฟโต๊ะ02";
+            tt02.innerHTML = "กำลังเสริฟโต๊ะ 01";
         } else {
-            tt02.innerHTML = "พร้อมทำงาน";
+            tt02.innerHTML = "โต๊ะ 02 พร้อมทำงาน";
         }
 
-        if (tt02.innerHTML == "พร้อมทำงาน") {
+        if (tt02.innerHTML == "โต๊ะ 02 พร้อมทำงาน") {
             Btn02.classList.remove("deactive");
             Btn02.classList.add("active");
         } else {
@@ -66,12 +66,12 @@ const tt03 = document.getElementById('tt03');
     dbRefObject03.on('value', snap => {
         status = snap.val();
         if (status == 1) {
-            tt03.innerHTML = "กำลังเสริฟโต๊ะ03";
+            tt03.innerHTML = "กำลังเสริฟโต๊ะ 03";
         } else {
-            tt03.innerHTML = "พร้อมทำงาน";
+            tt03.innerHTML = "โต๊ะ 03 พร้อมทำงาน";
         }
 
-        if (tt03.innerHTML == "พร้อมทำงาน") {
+        if (tt03.innerHTML == "โต๊ะ 03 พร้อมทำงาน") {
             Btn03.classList.remove("deactive");
             Btn03.classList.add("active");
         } else {
@@ -84,7 +84,7 @@ const tt03 = document.getElementById('tt03');
 
 function toggleEvent01() {
     ttcode = "01";
-    if (tt01.innerHTML == "พร้อมทำงาน") {
+    if (tt01.innerHTML == "โต๊ะ 01 พร้อมทำงาน") {
         msg = 1;
     } else {
         msg = 0;
@@ -93,7 +93,7 @@ function toggleEvent01() {
 }
 
 function toggleEvent02() {
-    if (tt02.innerHTML == "พร้อมทำงาน") {
+    if (tt02.innerHTML == "โต๊ะ 02 พร้อมทำงาน") {
         msg = 1;
     } else {
         msg = 0;
@@ -102,7 +102,7 @@ function toggleEvent02() {
 }
 
 function toggleEvent03() {
-    if (tt03.innerHTML == "พร้อมทำงาน") {
+    if (tt03.innerHTML == "โต๊ะ 03 พร้อมทำงาน") {
         msg = 1;
     } else {
         msg = 0;
