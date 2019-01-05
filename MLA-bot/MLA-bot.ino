@@ -3,9 +3,9 @@
 
 int dataI, dataO;
 
-byte line_error_code = 0, sw01 = 0, sw02 = 0, sw12 = 0;
-byte sensor[7] = {0, 0, 0, 0, 0, 0, 0},commands[4] = {0, 0, 0, 0};
-String table_error_code = "00", tCode = "00";
+byte line_error_code = 0, sw01 = 0, sw02 = 0, sw03 = 0, sw04 = 0;
+byte sensor[8] = {0, 0, 0, 0, 0, 0, 0, 0}, commands[5] = {0, 0, 0, 0, 0};
+String table_error_code = "000";
 int checkweight = 0, dLoop = 0;
 
 void read_sensor_values(void);
@@ -24,19 +24,20 @@ void waitC(void);
 // Table sensor Input
 #define table_sensor01 A6
 #define table_sensor02 A7
+#define table_sensor03 A8
 // Table sensor Input
 
 //Load cell
 #define loadcell_sensor01 A15
 #define loadcell_sensor02 A14
-
 HX711 balanza(loadcell_sensor02, loadcell_sensor01);
 //Load cell
 
 // select Table  Button
 #define table01 10
 #define table02 11
-#define table12 12
+#define table03 12
+#define table04 9
 // select Table  Button
 
 //Untrasonic
@@ -53,9 +54,10 @@ int Distance;
 #define motorL 5
 // Output
 // CheckOnlineCommand 41 output
-#define CommandI01 38
-#define CommandI02 39
-#define CommandI03 40
+#define CommandI01 37
+#define CommandI02 38
+#define CommandI03 39
+#define CommandI04 40
 #define CommandO04 41
 // CheckOnlineCommand
 
@@ -71,24 +73,53 @@ void sucess(String _code)
 {
   sw01 = 0;
   sw02 = 0;
-  sw12 = 0;
+  sw03 = 0;
+  sw04 = 0;
   table_error_code = _code;
   motor_output(0, 0, 0, 0);
-  digitalWrite(CommandO04,HIGH);
+  digitalWrite(CommandO04, HIGH);
+  delay(50);
+  digitalWrite(CommandO04, LOW);
+  commands[0] = LOW;
+  commands[1] = LOW;
+  commands[2] = LOW;
+  commands[3] = LOW;
 }
 void check_pr() {
   Serial.print("table_error_code : ");
   Serial.println(table_error_code);
-  sensor[5] = digitalRead(table_sensor02);
-  sensor[6] = digitalRead(table_sensor01);
+  sensor[5] = digitalRead(table_sensor03);
+  sensor[6] = digitalRead(table_sensor02);
+  sensor[7] = digitalRead(table_sensor01);
   delay(10);
   Serial.print("sensor[5] : ");
   Serial.print(sensor[5]);
   Serial.print("    sensor[6] : ");
-  Serial.println(sensor[6]);
+  Serial.print(sensor[6]);
+  Serial.print("    sensor[7] : ");
+  Serial.println(sensor[7]);
+
+  Serial.print("sw01 : ");
+  Serial.print(sw01);
+  Serial.print("    sw02 : ");
+  Serial.print(sw02);
+  Serial.print("    sw03 : ");
+  Serial.print(sw03);
+  Serial.print("    sw04 : ");
+  Serial.println(sw04);
+
   commands[0] = digitalRead(CommandI01);
   commands[1] = digitalRead(CommandI02);
   commands[2] = digitalRead(CommandI03);
+  commands[3] = digitalRead(CommandI04);
+  Serial.print("commands[0] : ");
+  Serial.println(commands[0]);
+  Serial.print("commands[1] : ");
+  Serial.println(commands[1]);
+  Serial.print("commands[2] : ");
+  Serial.println(commands[2]);
+  Serial.print("commands[3] : ");
+  Serial.println(commands[3]);
 }
 
 void setup()
@@ -106,24 +137,31 @@ void setup()
   pinMode(sensor04, INPUT);
   pinMode(sensor05, INPUT);
   // Line sensor Input
+
   // Table sensor Input
   pinMode(table_sensor01, INPUT);
   pinMode(table_sensor02, INPUT);
+  pinMode(table_sensor03, INPUT);
   // Table sensor Input
+
   // select Table button
   pinMode(table01, INPUT);
   pinMode(table02, INPUT);
+  pinMode(table03, INPUT);
+  pinMode(table04, INPUT);
   // select Table button
+
   //Untrasonic
   pinMode(TriggerPin, OUTPUT);
   pinMode(EchoPin, INPUT);
   //Untrasonic
-// CheckOnlineCommand
+  // CheckOnlineCommand
   pinMode(CommandI01, INPUT);
   pinMode(CommandI02, INPUT);
   pinMode(CommandI03, INPUT);
+  pinMode(CommandI04, INPUT);
   pinMode(CommandO04, OUTPUT);
-// CheckOnlineCommand
+  // CheckOnlineCommand
   Serial.println(balanza.read());
   balanza.set_scale(207.5);
   balanza.tare(20);
@@ -133,26 +171,30 @@ void loop()
 {
   sw01 = digitalRead(table01);
   sw02 = digitalRead(table02);
-  sw12 = digitalRead(table12);
+  sw03 = digitalRead(table03);
+  sw04 = digitalRead(table04);
   check_pr();
 
   checkweight = balanza.get_units(1), 0;
 
   while (sw01 == HIGH || commands[0] == HIGH)
   {
+    Serial.println("Table01 ");
     check_pr();
     checkUntrasonic();
     if (Distance <= 50)
     {
       motor_output(0, 0, 0, 0);
+      Serial.println("error ");
     }
     else
     {
-      if (table_error_code == "00")
+      if (table_error_code == "000")
       {
-        if (sensor[5] == HIGH && sensor[6] == LOW)
+        if (sensor[5] == HIGH && sensor[6] == LOW && sensor[7] == LOW)
         {
-          table_error_code = "01";
+          Serial.println("true 0001 ");
+          table_error_code = "001";
           motor_output(0, 0, 0, 0);
           waitC();
         } else {
@@ -160,11 +202,11 @@ void loop()
           main_Control();
         }
       }
-      if (table_error_code == "01")
+      if (table_error_code == "001")
       {
-        if (sensor[5] == HIGH && sensor[6] == HIGH)
-        {          
-          sucess("00");
+        if (sensor[5] == HIGH && sensor[6] == HIGH && sensor[7] == HIGH)
+        {
+          sucess("000");
           break;
         } else {
           read_sensor_values();
@@ -183,11 +225,11 @@ void loop()
     }
     else
     {
-      if (table_error_code == "00")
+      if (table_error_code == "000")
       {
-        if (sensor[5] == LOW && sensor[6] == HIGH)
+        if (sensor[5] == LOW && sensor[6] == HIGH  && sensor[7] == LOW)
         {
-          table_error_code = "10";
+          table_error_code = "010";
           motor_output(0, 0, 0, 0);
           waitC();
         } else {
@@ -195,11 +237,11 @@ void loop()
           main_Control();
         }
       }
-      if (table_error_code == "10")
+      if (table_error_code == "010")
       {
-        if (sensor[5] == HIGH && sensor[6] == HIGH)
-        {          
-          sucess("00");
+        if (sensor[5] == HIGH && sensor[6] == HIGH  && sensor[7] == HIGH)
+        {
+          sucess("000");
           break;
         } else {
           read_sensor_values();
@@ -208,7 +250,7 @@ void loop()
       }
     }
   }
-  while (sw12 == HIGH || commands[2] == HIGH)
+  while (sw03 == HIGH || commands[1] == HIGH)
   {
     check_pr();
     checkUntrasonic();
@@ -218,12 +260,11 @@ void loop()
     }
     else
     {
-      if (table_error_code == "00")
+      if (table_error_code == "000")
       {
-        if (sensor[5] == HIGH && sensor[6] == LOW)
+        if (sensor[5] == LOW && sensor[6] == HIGH  && sensor[6] == HIGH)
         {
-          table_error_code = "01";
-          sw01 = 0;
+          table_error_code = "011";
           motor_output(0, 0, 0, 0);
           waitC();
         } else {
@@ -231,12 +272,34 @@ void loop()
           main_Control();
         }
       }
-      if (table_error_code == "01")
+      if (table_error_code == "011")
       {
-        if (sensor[5] == LOW && sensor[6] == HIGH)
+        if (sensor[5] == HIGH && sensor[6] == HIGH  && sensor[6] == HIGH)
         {
-          table_error_code = "10";
-          sw02 = 0;
+          sucess("000");
+          break;
+        } else {
+          read_sensor_values();
+          main_Control();
+        }
+      }
+    }
+  }
+  while (sw04 == HIGH || commands[1] == HIGH)
+  {
+    check_pr();
+    checkUntrasonic();
+    if (Distance <= 50)
+    {
+      motor_output(0, 0, 0, 0);
+    }
+    else
+    {
+      if (table_error_code == "000")
+      {
+        if (sensor[5] == HIGH && sensor[6] == LOW  && sensor[6] == LOW)
+        {
+          table_error_code = "100";
           motor_output(0, 0, 0, 0);
           waitC();
         } else {
@@ -244,11 +307,11 @@ void loop()
           main_Control();
         }
       }
-      if (table_error_code == "10")
+      if (table_error_code == "100")
       {
-        if (sensor[5] == HIGH && sensor[6] == HIGH)
-        {          
-          sucess("00");
+        if (sensor[5] == HIGH && sensor[6] == HIGH && sensor[7] == HIGH)
+        {
+          sucess("000");
           break;
         } else {
           read_sensor_values();
@@ -258,7 +321,6 @@ void loop()
     }
   }
 }
-
 void read_sensor_values()
 {
   sensor[0] = digitalRead(sensor01);
@@ -328,55 +390,55 @@ void main_Control()
 {
   if (line_error_code == 17)         // straight
   {
-    motor_output(37, 50, 255, 255);
+    motor_output(160, 160, 255, 255);
   }
   else if (line_error_code == 4)      // straight
   {
-    motor_output(37, 50, 255, 255);
+    motor_output(160, 160, 255, 255);
   }
   else if (line_error_code == 3)      // Turn left(2)
   {
-    motor_output(35, 5, 255, 0);
+    motor_output(160, 140, 255, 255);
   }
   else if (line_error_code == 7)      // Turn left(3)
   {
-    motor_output(55, 15, 255, 0);
+    motor_output(160, 120, 255, 255);
   }
   else if (line_error_code == 15)     // Turn left(4)
   {
-    motor_output(70, 20, 255, 0);
+    motor_output(160, 120, 255, 0);
   }
   else if (line_error_code == 19)     // Turn left(1)
   {
-    motor_output(25, 0, 255, 0);
+    motor_output(160, 150, 255, 255);
   }
   else if (line_error_code == 24)     // Turn right(2)
   {
-    motor_output(5, 35, 0, 255);
+    motor_output(140, 160, 255, 255);
   }
   else if (line_error_code == 25)     // Turn right(1)
   {
-    motor_output(0, 25, 0, 255);
+    motor_output(150, 160, 255, 255);
   }
   else if (line_error_code == 28)     // Turn right(3)
   {
-    motor_output(15, 55, 0, 255);
+    motor_output(120, 160, 255, 255);
   }
   else if (line_error_code == 30)     // Turn right(4)
   {
-    motor_output(20, 70, 0, 255);
+    motor_output(120, 160, 0, 255);
   }
   else if (line_error_code == 31)     // Back
   {
-    motor_output(30, 30, 0, 0);
+    motor_output(155, 155, 0, 0);
   }
   else if (line_error_code == 1)      // Turn right
   {
-    motor_output(15, 70, 0, 255);
+    motor_output(155, 160, 0, 255);
   }
   else if (line_error_code == 16)     // Turn left
   {
-    motor_output(70, 15, 255, 0);
+    motor_output(160, 155, 255, 0);
   }
   else if (line_error_code == 0)      // line_error_code code:Stop
   {
@@ -387,6 +449,8 @@ void main_Control()
 void waitC() {
   Serial.print("in waitC");
   checkweight = balanza.get_units(1), 0;
+  Serial.print("checkweight---------------------------------------------------------------- : ");
+  Serial.println(checkweight);
   while (checkweight > 22) {
     dLoop += 1;
     delay(5000);
