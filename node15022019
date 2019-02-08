@@ -1,0 +1,43 @@
+#include <ESP8266WiFi.h>
+#include <FirebaseArduino.h>
+//needed for library
+#include <DNSServer.h>
+#include <ESP8266WebServer.h>
+#include <WiFiManager.h>
+//54012009
+#define FIREBASE_HOST "storagewebdev04.firebaseio.com"
+#define FIREBASE_KEY "vaPOOBasHTdyymw8vwSMhaWVPaCvEg5hhDlleUIU"
+
+const String deviceNumber = "001";
+const String deviceName = "Nook " + deviceNumber;
+int outputs = D0, get01;
+
+void setupFirebase() {
+  Firebase.begin(FIREBASE_HOST, FIREBASE_KEY);
+  Firebase.setString(deviceNumber + "/name", deviceName);
+}
+
+void setupPinsMode() {
+  pinMode(outputs, OUTPUT);
+}
+
+void getDataFirebase() {
+  get01 = Firebase.getInt(deviceNumber + "/value/OUTPUT01");
+  Serial.println(get01);
+  digitalWrite(outputs, get01);
+}
+
+void setup() {
+  Serial.begin(9600);
+  WiFiManager wifiManager;
+  wifiManager.autoConnect("NodeMCU");
+  Serial.println("connected...yeey :)");
+
+  setupFirebase();
+  setupPinsMode();
+
+}
+
+void loop() {
+  getDataFirebase();
+}
